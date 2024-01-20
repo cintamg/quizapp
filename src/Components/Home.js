@@ -4,7 +4,6 @@ export default function Home() {
 
     const [question,setQuestion] = useState([]);
     const [currQuesIndex, setCurrQuesIndex] = useState(0);
-    const [conditionIsTrue,setConditionIsTrue] = useState(false);
 
     useEffect( () => {
         const fetchQuizQuestions = async () => {
@@ -17,10 +16,11 @@ export default function Home() {
     },[]);
 
     const handleNextQuestion = () => {
-        if(currQuesIndex < question.length)
         setCurrQuesIndex(currQuesIndex+1);
-        else
-        setConditionIsTrue(true);
+    }
+
+    const handlePreviousQuestion = () => {
+        setCurrQuesIndex(currQuesIndex-1);
     }
 
   return (
@@ -34,7 +34,8 @@ export default function Home() {
                   <li key={index}>{question[currQuesIndex].answers[key]}</li>
                 ))}
                 </ol>
-                <button onClick={handleNextQuestion} disabled={conditionIsTrue}>Next Question</button>
+                <button onClick={handlePreviousQuestion} disabled={currQuesIndex <= 0}>Previous</button>
+                <button onClick={handleNextQuestion} disabled={currQuesIndex >= question.length-1}>Next</button>
             </div>
         ):(
             <p>Loading Question</p>
