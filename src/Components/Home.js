@@ -4,6 +4,7 @@ export default function Home() {
 
     const [question,setQuestion] = useState([]);
     const [currQuesIndex, setCurrQuesIndex] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
 
     useEffect( () => {
         const fetchQuizQuestions = async () => {
@@ -17,30 +18,51 @@ export default function Home() {
 
     const handleNextQuestion = () => {
         setCurrQuesIndex(currQuesIndex+1);
+        setSelectedAnswer(null);
     }
 
     const handlePreviousQuestion = () => {
         setCurrQuesIndex(currQuesIndex-1);
+        setSelectedAnswer(null);
+    }
+
+    const handleAnswerChange = (event) => {
+        setSelectedAnswer(event.target.value);
     }
 
   return (
+    <>
+    <h1 className='text text-center'>Quizz App</h1>
     <div className="container">
-        <h1>Quizz App</h1>
         { (question.length > 0 && currQuesIndex < question.length) ? (
             <div className="questions">
-                <p>{question[currQuesIndex].question}</p>
-                <ol>
-                {Object.keys(question[currQuesIndex].answers).map((key, index) => (
-                  <li key={index}>{question[currQuesIndex].answers[key]}</li>
+                <p className='question'><b>{currQuesIndex+1}.  {question[currQuesIndex].question}</b></p>
+                <ul style={{ listStyleType: 'none', padding: 0 }}>
+                {Object.entries(question[currQuesIndex].answers).filter(([key, value]) => value !== null).map(([key, value], index) => (
+                <li className='answer' key={index}>
+                  <label>
+                    <input className='mx-3'
+                      type="radio"
+                      name="answerOptions"
+                      value={key}
+                      checked={selectedAnswer === key}
+                      onChange={handleAnswerChange}
+                    />
+                    {value}
+                  </label>
+                </li>
                 ))}
-                </ol>
-                <button onClick={handlePreviousQuestion} disabled={currQuesIndex <= 0}>Previous</button>
-                <button onClick={handleNextQuestion} disabled={currQuesIndex >= question.length-1}>Next</button>
+                </ul>
             </div>
         ):(
             <p>Loading Question</p>
         )}
     </div>
+    <div class="button d-flex justify-content-between my-3">
+        <button className="btn btn-primary" onClick={handlePreviousQuestion} disabled={currQuesIndex <= 0}>Previous</button>
+        <button className="btn btn-primary" onClick={handleNextQuestion} disabled={currQuesIndex >= question.length-1}>Next</button>
+    </div>
+    </>
   );
 }
 
